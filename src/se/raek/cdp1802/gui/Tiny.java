@@ -82,6 +82,7 @@ public class Tiny {
 	private JFrame frame;
 	private JLabel[] outputLabels;
 	private JPanel outputPanel;
+	private JLabel dLabel;
 	private JLabel qLabel;
 	private JLabel rpLabel;
 	private JButton clockButton;
@@ -98,6 +99,7 @@ public class Tiny {
 		frame = new JFrame("1802");
 		outputLabels = new JLabel[7];
 		outputPanel = new JPanel();
+		dLabel = makeLabel();
 		qLabel = makeLabel();
 		rpLabel = makeLabel();
 		clockButton = new JButton("clock");
@@ -131,7 +133,8 @@ public class Tiny {
 			outputPanel.add(outputLabels[i]);
 		}
 		frame.add(outputPanel);
-		restPanel.setLayout(new GridLayout(3, 1));
+		restPanel.setLayout(new GridLayout(4, 1));
+		restPanel.add(dLabel);
 		restPanel.add(qLabel);
 		restPanel.add(rpLabel);
 		restPanel.add(clockButton);
@@ -148,6 +151,7 @@ public class Tiny {
 	}
 
 	private void updateGui() {
+		dLabel.setText(String.format("D=%02X", s.d));
 		qLabel.setText(s.q ? "Q=1" : "Q=0");
 		rpLabel.setText(String.format("R(P)=0x%04X", s.r[s.p]));
 		for (int i = 0; i < 7; i++) {
