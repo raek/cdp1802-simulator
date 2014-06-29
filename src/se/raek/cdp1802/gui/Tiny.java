@@ -189,7 +189,7 @@ public class Tiny {
 
 	private static final Font font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 
-	private static final String testProgram = "2C1CF812BFF834AF9FBE8FAEEDF801BDF800AD7BC469612D6A622D6B632D6C642D6D652D6E662D6F672D7A3000";
+	private static final String testProgram = "EDF801BDF800ADF8A55DF8000D2C1CF812BFF834AF9FBE8FAE7BC469612D6A622D6B632D6C642D6D652D6E662D6F672D7A3000";
 
 	public Tiny(String program) {
 		s = new Cpu.State();

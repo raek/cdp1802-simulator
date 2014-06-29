@@ -81,6 +81,13 @@ public class Cpu {
 
 	private void execute(int i, int n) {
 		switch (i) {
+		case 0x0:
+			if (n == 0) {
+				throw new InstructionNotImplementedException(0, 0);
+			} else { // LDN
+				s.d = m.read(s.r[n]);
+			}
+			break;
 		case 0x1: // INC
 			s.r[n]++;
 			s.r[n] &= 0xFFFF;
@@ -91,6 +98,9 @@ public class Cpu {
 			break;
 		case 0x3:
 			executeShortBranch(n);
+			break;
+		case 0x5: // STR
+			m.write(s.r[n], s.d);
 			break;
 		case 0x6:
 			executeInputOutput(n);
