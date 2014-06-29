@@ -90,6 +90,7 @@ public class Tiny {
 	private JLabel dLabel;
 	private JLabel qLabel;
 	private JLabel pLabel;
+	private JLabel xLabel;
 	private JButton clockButton;
 
 	private Map<JLabel, String> currentLabelTexts = new HashMap<JLabel, String>();
@@ -112,6 +113,7 @@ public class Tiny {
 		dLabel = makeLabel();
 		qLabel = makeLabel();
 		pLabel = makeLabel();
+		xLabel = makeLabel();
 		clockButton = new JButton("clock");
 
 		for (int i = 0; i < 16; i++) {
@@ -145,13 +147,14 @@ public class Tiny {
 			panel1.add(rLabels[i]);
 		}
 		frame.add(panel1);
-		panel2.setLayout(new GridLayout(11, 1, 0, 0));
+		panel2.setLayout(new GridLayout(12, 1, 0, 0));
 		for (int i = 0; i < 7; i++) {
 			panel2.add(outputLabels[i]);
 		}
 		panel2.add(dLabel);
 		panel2.add(qLabel);
 		panel2.add(pLabel);
+		panel2.add(xLabel);
 		panel2.add(clockButton);
 		frame.add(panel2);
 		updateGui();
@@ -189,6 +192,7 @@ public class Tiny {
 		setLabelText(dLabel, String.format("D=%02X", s.d));
 		setLabelText(qLabel, s.q ? "Q=1" : "Q=0");
 		setLabelText(pLabel, String.format("P=%X", s.p));
+		setLabelText(xLabel, String.format("X=%X", s.x));
 	}
 
 }
