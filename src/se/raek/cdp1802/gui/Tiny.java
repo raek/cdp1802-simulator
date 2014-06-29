@@ -1,14 +1,18 @@
 package se.raek.cdp1802.gui;
 
-import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import se.raek.cdp1802.sim.Cpu;
+import se.raek.cdp1802.sim.Io;
 import se.raek.cdp1802.sim.Memory;
 
 public class Tiny {
@@ -44,36 +48,101 @@ public class Tiny {
 		}
 
 		@Override
-		public int read(int i) {
-			return values[i];
+		public int read(int addr) {
+			return values[addr];
+		}
+
+	}
+
+	public static class SimpleIo implements Io {
+
+		private final int[] outputValues;
+
+		public SimpleIo() {
+			outputValues = new int[7];
+		}
+
+		@Override
+		public void output(int n, int data) {
+			outputValues[n - 1] = data;
 		}
 
 	}
 
 	public static void main(String[] args) {
-		final Cpu.State s = new Cpu.State();
-		final Memory m = new SimpleRom("7BC47A3000");
-		final Cpu cpu = new Cpu(s, m);
+		new Tiny();
+	}
 
-		final JFrame frame = new JFrame("1802");
-		final JLabel qLabel = new JLabel("Q=0");
-		final JLabel rpLabel = new JLabel("R(P)=0x0000");
-		final JButton clockButton = new JButton("clock");
+	private Cpu.State s;
+	private SimpleRom m;
+	private SimpleIo io;
+	private Cpu cpu;
 
+	private JFrame frame;
+	private JLabel[] outputLabels;
+	private JPanel outputPanel;
+	private JLabel qLabel;
+	private JLabel rpLabel;
+	private JButton clockButton;
+	private JPanel restPanel;
+
+	private static final Font font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
+
+	public Tiny() {
+		s = new Cpu.State();
+		m = new SimpleRom("7BC461016202630364046505660667077A3000");
+		io = new SimpleIo();
+		cpu = new Cpu(s, m, io);
+
+		frame = new JFrame("1802");
+		outputLabels = new JLabel[7];
+		outputPanel = new JPanel();
+		qLabel = makeLabel();
+		rpLabel = makeLabel();
+		clockButton = new JButton("clock");
+		restPanel = new JPanel();
+
+		for (int i = 0; i < 7; i++) {
+			outputLabels[i] = makeLabel();
+		}
+
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		clockButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				cpu.tick();
-				qLabel.setText(s.q ? "Q=1" : "Q=0");
-				rpLabel.setText(String.format("R(P)=0x%04X", s.r[s.p]));
+				updateGui();
 			}
 		});
-		frame.setLayout(new FlowLayout());
-		frame.add(qLabel);
-		frame.add(rpLabel);
-		frame.add(clockButton);
+		frame.setLayout(new GridLayout(1, 2));
+		outputPanel.setLayout(new GridLayout(7, 1));
+		for (int i = 0; i < 7; i++) {
+			outputPanel.add(outputLabels[i]);
+		}
+		frame.add(outputPanel);
+		restPanel.setLayout(new GridLayout(3, 1));
+		restPanel.add(qLabel);
+		restPanel.add(rpLabel);
+		restPanel.add(clockButton);
+		frame.add(restPanel);
+		updateGui();
 		frame.pack();
 		frame.setVisible(true);
+	}
+
+	private JLabel makeLabel() {
+		JLabel label = new JLabel();
+		label.setFont(font);
+		return label;
+	}
+
+	private void updateGui() {
+		qLabel.setText(s.q ? "Q=1" : "Q=0");
+		rpLabel.setText(String.format("R(P)=0x%04X", s.r[s.p]));
+		for (int i = 0; i < 7; i++) {
+			outputLabels[i].setText(String.format("OUT%d=0x%02X", i,
+					io.outputValues[i]));
+		}
 	}
 
 }

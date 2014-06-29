@@ -14,8 +14,8 @@ public class MockMemory implements Memory {
 	}
 
 	@Override
-	public int read(int i) {
-		if (i == 0) {
+	public int read(int addr) {
+		if (addr == 0) {
 			return value;
 		} else {
 			throw new IndexOutOfBoundsException();

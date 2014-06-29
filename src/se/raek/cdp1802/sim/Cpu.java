@@ -17,10 +17,12 @@ public class Cpu {
 
 	private State s;
 	private Memory m;
+	private Io io;
 
-	public Cpu(State state, Memory memory) {
-		s = state;
-		m = memory;
+	public Cpu(State s, Memory m, Io io) {
+		this.s = s;
+		this.m = m;
+		this.io = io;
 	}
 
 	public void tick() {
@@ -47,6 +49,9 @@ public class Cpu {
 		case 0x3:
 			executeShortBranch(n);
 			break;
+		case 0x6:
+			executeInputOutput(n);
+			break;
 		case 0x7:
 			executeControl(n);
 			break;
@@ -58,6 +63,26 @@ public class Cpu {
 		}
 	}
 
+	private void executeShortBranch(int n) {
+		switch (n) {
+		case 0x0: // BR
+			s.r[s.p] = m.read(s.r[s.p]);
+			break;
+		default:
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private void executeInputOutput(int n) {
+		if (n == 0) {
+			throw new UnsupportedOperationException();
+		} else if (n < 8) { // OUT
+			io.output(n, m.read(s.r[s.x]++));
+		} else {
+			throw new UnsupportedOperationException();
+		}
+	}
+
 	private void executeControl(int n) {
 		switch (n) {
 		case 0xA: // REQ
@@ -65,16 +90,6 @@ public class Cpu {
 			break;
 		case 0xB: // SEQ
 			s.q = true;
-			break;
-		default:
-			throw new UnsupportedOperationException();
-		}
-	}
-
-	private void executeShortBranch(int n) {
-		switch (n) {
-		case 0x0: // BR
-			s.r[s.p] = m.read(s.r[s.p]);
 			break;
 		default:
 			throw new UnsupportedOperationException();
