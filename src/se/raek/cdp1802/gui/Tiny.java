@@ -74,7 +74,14 @@ public class Tiny {
 	}
 
 	public static void main(String[] args) {
-		new Tiny();
+		if (args.length == 0) {
+			new Tiny(testProgram);
+		} else if (args.length == 1) {
+			new Tiny(args[0]);
+		} else {
+			System.out.println("got too many arguments");
+			System.exit(1);
+		}
 	}
 
 	private Cpu.State s;
@@ -97,9 +104,9 @@ public class Tiny {
 
 	private static final Font font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 
-	private static final String program = "ED2D1DF812BFF834AF9FBE8FAEE07BC461016202630364046505660667077A3000";
+	private static final String testProgram = "ED2D1DF812BFF834AF9FBE8FAEE07BC461016202630364046505660667077A3000";
 
-	public Tiny() {
+	public Tiny(String program) {
 		s = new Cpu.State();
 		m = new SimpleRom(program);
 		io = new SimpleIo();
