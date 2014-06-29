@@ -165,6 +165,12 @@ public class Cpu {
 
 	private void executeControl(int n) {
 		switch (n) {
+		case 0x2: // LDXA
+			s.d = m.read(s.r[s.x]++);
+			break;
+		case 0x3: // STXD
+			m.write(s.r[s.x]--, s.d);
+			break;
 		case 0xA: // REQ
 			s.q = false;
 			break;
@@ -178,8 +184,7 @@ public class Cpu {
 
 	private void executeLongBranch(int n) {
 		switch (n) {
-		case 0x4:
-			// NOP
+		case 0x4: // NOP
 			break;
 		default:
 			throw new InstructionNotImplementedException(0xC, n);
@@ -188,8 +193,10 @@ public class Cpu {
 
 	private void executeArithmeticLogic(int n) {
 		switch (n) {
-		case 0x8:
-			// LDI
+		case 0x0: // LDX
+			s.d = m.read(s.r[s.x]);
+			break;
+		case 0x8: // LDI
 			s.d = m.read(s.r[s.p]++);
 			s.r[s.p] &= 0xFFFF;;
 			break;
