@@ -91,9 +91,11 @@ public class Tiny {
 
 	private static final Font font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 
+	private static final String program = "F812BFF834AF9FBE8FAE7BC461016202630364046505660667077A3000";
+
 	public Tiny() {
 		s = new Cpu.State();
-		m = new SimpleRom("F8A57BC461016202630364046505660667077A3000");
+		m = new SimpleRom(program);
 		io = new SimpleIo();
 		cpu = new Cpu(s, m, io);
 

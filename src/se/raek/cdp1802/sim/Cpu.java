@@ -61,6 +61,22 @@ public class Cpu {
 		return in >> 4;
 	}
 
+	private static int lowByte(int w) {
+		return w & 0x00FF;
+	}
+
+	private static int highByte(int w) {
+		return w >> 8;
+	}
+
+	private static int withLowByte(int w, int b) {
+		return (w & 0xFF00) | b;
+	}
+
+	private static int withHighByte(int w, int b) {
+		return (b << 8) | (w & 0x00FF);
+	}
+
 	private void execute(int i, int n) {
 		switch (i) {
 		case 0x3:
@@ -71,6 +87,18 @@ public class Cpu {
 			break;
 		case 0x7:
 			executeControl(n);
+			break;
+		case 0x8: // GLO
+			s.d = lowByte(s.r[n]);
+			break;
+		case 0x9: // GHI
+			s.d = highByte(s.r[n]);
+			break;
+		case 0xA: // PLO
+			s.r[n] = withLowByte(s.r[n], s.d);
+			break;
+		case 0xB: // PHI
+			s.r[n] = withHighByte(s.r[n], s.d);
 			break;
 		case 0xC:
 			executeLongBranch(n);
