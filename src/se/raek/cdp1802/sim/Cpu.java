@@ -75,6 +75,9 @@ public class Cpu {
 		case 0xC:
 			executeLongBranch(n);
 			break;
+		case 0xF:
+			executeArithmeticLogic(n);
+			break;
 		default:
 			throw new InstructionNotImplementedException(i, n);
 		}
@@ -120,6 +123,17 @@ public class Cpu {
 			break;
 		default:
 			throw new InstructionNotImplementedException(0xC, n);
+		}
+	}
+
+	private void executeArithmeticLogic(int n) {
+		switch (n) {
+		case 0x8:
+			// LDI
+			s.d = m.read(s.r[s.p]++);
+			break;
+		default:
+			throw new InstructionNotImplementedException(0xF, n);
 		}
 	}
 
