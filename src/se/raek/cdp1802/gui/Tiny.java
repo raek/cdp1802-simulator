@@ -1,9 +1,12 @@
 package se.raek.cdp1802.gui;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -89,6 +92,8 @@ public class Tiny {
 	private JLabel pLabel;
 	private JButton clockButton;
 
+	private Map<JLabel, String> currentLabelTexts = new HashMap<JLabel, String>();
+
 	private static final Font font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 
 	private static final String program = "F812BFF834AF9FBE8FAE7BC461016202630364046505660667077A3000";
@@ -160,17 +165,30 @@ public class Tiny {
 		return label;
 	}
 
+	private void setLabelText(JLabel label, String newText) {
+		String oldText = currentLabelTexts.get(label);
+		Color color;
+		if (oldText == null || oldText.equals(newText)) {
+			color = Color.BLACK;
+		} else {
+			color = Color.RED;
+		}
+		label.setText(newText);
+		label.setForeground(color);
+		currentLabelTexts.put(label, newText);
+	}
+
 	private void updateGui() {
 		for (int i = 0; i < 16; i++) {
-			rLabels[i].setText(String.format("R(%X)=%04X", i, s.r[i]));
+			setLabelText(rLabels[i], String.format("R(%X)=%04X", i, s.r[i]));
 		}
 		for (int i = 0; i < 7; i++) {
-			outputLabels[i].setText(String.format("OUT%d=%02X", i + 1,
-					io.outputValues[i]));
+			setLabelText(outputLabels[i],
+					String.format("OUT%d=%02X", i + 1, io.outputValues[i]));
 		}
-		dLabel.setText(String.format("D=%02X", s.d));
-		qLabel.setText(s.q ? "Q=1" : "Q=0");
-		pLabel.setText(String.format("P=%X", s.p));
+		setLabelText(dLabel, String.format("D=%02X", s.d));
+		setLabelText(qLabel, s.q ? "Q=1" : "Q=0");
+		setLabelText(pLabel, String.format("P=%X", s.p));
 	}
 
 }
