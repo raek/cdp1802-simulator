@@ -50,7 +50,9 @@ public class Cpu {
 	}
 
 	private int fetch() {
-		return m.read(s.r[s.p]++);
+		int in = m.read(s.r[s.p]++);
+		s.r[s.p] &= 0xFFFF;
+		return in;
 	}
 
 	private static int lowNibble(int in) {
@@ -81,9 +83,11 @@ public class Cpu {
 		switch (i) {
 		case 0x1: // INC
 			s.r[n]++;
+			s.r[n] &= 0xFFFF;
 			break;
 		case 0x2: // DEC
 			s.r[n]--;
+			s.r[n] &= 0xFFFF;
 			break;
 		case 0x3:
 			executeShortBranch(n);
@@ -135,6 +139,7 @@ public class Cpu {
 			throw new InstructionNotImplementedException(0x6, n);
 		} else if (n < 8) { // OUT
 			io.output(n, m.read(s.r[s.x]++));
+			s.r[s.x] &= 0xFFFF;
 		} else {
 			throw new InstructionNotImplementedException(0x6, n);
 		}
@@ -168,6 +173,7 @@ public class Cpu {
 		case 0x8:
 			// LDI
 			s.d = m.read(s.r[s.p]++);
+			s.r[s.p] &= 0xFFFF;;
 			break;
 		default:
 			throw new InstructionNotImplementedException(0xF, n);
