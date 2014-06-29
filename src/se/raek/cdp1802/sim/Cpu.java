@@ -99,6 +99,10 @@ public class Cpu {
 		case 0x3:
 			executeShortBranch(n);
 			break;
+		case 0x4: // LDA
+			s.d = m.read(s.r[n]++);
+			s.r[n] &= 0xFFFF;
+			break;
 		case 0x5: // STR
 			m.write(s.r[n], s.d);
 			break;
