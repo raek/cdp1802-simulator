@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
@@ -90,7 +91,7 @@ public class Tiny {
 
 	public Tiny() {
 		s = new Cpu.State();
-		m = new SimpleRom("7BC461016202630364046505660667077A3000");
+		m = new SimpleRom("F8A57BC461016202630364046505660667077A3000");
 		io = new SimpleIo();
 		cpu = new Cpu(s, m, io);
 
@@ -110,7 +111,17 @@ public class Tiny {
 		clockButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				cpu.tick();
+				try {
+					cpu.tick();
+				} catch (Cpu.InstructionNotImplementedException e) {
+					JOptionPane.showMessageDialog(frame, e.getMessage());
+					clockButton.setEnabled(false);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frame, String.format(
+							"Caught %s: %s", e.getClass().getName(),
+							e.getMessage()));
+					clockButton.setEnabled(false);
+				}
 				updateGui();
 			}
 		});

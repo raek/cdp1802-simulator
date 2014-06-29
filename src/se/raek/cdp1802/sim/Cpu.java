@@ -15,6 +15,23 @@ public class Cpu {
 
 	}
 
+	public static class InstructionNotImplementedException extends
+			RuntimeException {
+
+		private static final long serialVersionUID = 1L;
+		public final int in;
+
+		public InstructionNotImplementedException(int i, int n) {
+			this.in = (i << 4) | n;
+		}
+
+		@Override
+		public String getMessage() {
+			return String.format("Instruction not implemented: %02X", in);
+		}
+
+	}
+
 	private State s;
 	private Memory m;
 	private Io io;
@@ -59,7 +76,7 @@ public class Cpu {
 			executeLongBranch(n);
 			break;
 		default:
-			throw new UnsupportedOperationException();
+			throw new InstructionNotImplementedException(i, n);
 		}
 	}
 
@@ -69,17 +86,17 @@ public class Cpu {
 			s.r[s.p] = m.read(s.r[s.p]);
 			break;
 		default:
-			throw new UnsupportedOperationException();
+			throw new InstructionNotImplementedException(0x3, n);
 		}
 	}
 
 	private void executeInputOutput(int n) {
 		if (n == 0) {
-			throw new UnsupportedOperationException();
+			throw new InstructionNotImplementedException(0x6, n);
 		} else if (n < 8) { // OUT
 			io.output(n, m.read(s.r[s.x]++));
 		} else {
-			throw new UnsupportedOperationException();
+			throw new InstructionNotImplementedException(0x6, n);
 		}
 	}
 
@@ -92,7 +109,7 @@ public class Cpu {
 			s.q = true;
 			break;
 		default:
-			throw new UnsupportedOperationException();
+			throw new InstructionNotImplementedException(0x7, n);
 		}
 	}
 
@@ -102,7 +119,7 @@ public class Cpu {
 			// NOP
 			break;
 		default:
-			throw new UnsupportedOperationException();
+			throw new InstructionNotImplementedException(0xC, n);
 		}
 	}
 
