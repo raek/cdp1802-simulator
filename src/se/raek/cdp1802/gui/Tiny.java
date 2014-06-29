@@ -80,13 +80,14 @@ public class Tiny {
 	private Cpu cpu;
 
 	private JFrame frame;
+	private JPanel panel1;
+	private JPanel panel2;
+	private JLabel[] rLabels;
 	private JLabel[] outputLabels;
-	private JPanel outputPanel;
 	private JLabel dLabel;
 	private JLabel qLabel;
-	private JLabel rpLabel;
+	private JLabel pLabel;
 	private JButton clockButton;
-	private JPanel restPanel;
 
 	private static final Font font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 
@@ -97,14 +98,18 @@ public class Tiny {
 		cpu = new Cpu(s, m, io);
 
 		frame = new JFrame("1802");
+		panel1 = new JPanel();
+		panel2 = new JPanel();
+		rLabels = new JLabel[16];
 		outputLabels = new JLabel[7];
-		outputPanel = new JPanel();
 		dLabel = makeLabel();
 		qLabel = makeLabel();
-		rpLabel = makeLabel();
+		pLabel = makeLabel();
 		clockButton = new JButton("clock");
-		restPanel = new JPanel();
 
+		for (int i = 0; i < 16; i++) {
+			rLabels[i] = makeLabel();
+		}
 		for (int i = 0; i < 7; i++) {
 			outputLabels[i] = makeLabel();
 		}
@@ -127,18 +132,21 @@ public class Tiny {
 				updateGui();
 			}
 		});
-		frame.setLayout(new GridLayout(1, 2));
-		outputPanel.setLayout(new GridLayout(7, 1));
-		for (int i = 0; i < 7; i++) {
-			outputPanel.add(outputLabels[i]);
+		frame.setLayout(new GridLayout(1, 2, 20, 0));
+		panel1.setLayout(new GridLayout(16, 1, 0, 0));
+		for (int i = 0; i < 16; i++) {
+			panel1.add(rLabels[i]);
 		}
-		frame.add(outputPanel);
-		restPanel.setLayout(new GridLayout(4, 1));
-		restPanel.add(dLabel);
-		restPanel.add(qLabel);
-		restPanel.add(rpLabel);
-		restPanel.add(clockButton);
-		frame.add(restPanel);
+		frame.add(panel1);
+		panel2.setLayout(new GridLayout(11, 1, 0, 0));
+		for (int i = 0; i < 7; i++) {
+			panel2.add(outputLabels[i]);
+		}
+		panel2.add(dLabel);
+		panel2.add(qLabel);
+		panel2.add(pLabel);
+		panel2.add(clockButton);
+		frame.add(panel2);
 		updateGui();
 		frame.pack();
 		frame.setVisible(true);
@@ -151,13 +159,16 @@ public class Tiny {
 	}
 
 	private void updateGui() {
-		dLabel.setText(String.format("D=%02X", s.d));
-		qLabel.setText(s.q ? "Q=1" : "Q=0");
-		rpLabel.setText(String.format("R(P)=0x%04X", s.r[s.p]));
+		for (int i = 0; i < 16; i++) {
+			rLabels[i].setText(String.format("R(%X)=%04X", i, s.r[i]));
+		}
 		for (int i = 0; i < 7; i++) {
-			outputLabels[i].setText(String.format("OUT%d=0x%02X", i,
+			outputLabels[i].setText(String.format("OUT%d=%02X", i + 1,
 					io.outputValues[i]));
 		}
+		dLabel.setText(String.format("D=%02X", s.d));
+		qLabel.setText(s.q ? "Q=1" : "Q=0");
+		pLabel.setText(String.format("P=%X", s.p));
 	}
 
 }
