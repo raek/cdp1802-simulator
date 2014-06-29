@@ -6,4 +6,9 @@ public class MockIo implements Io {
 	public void output(int n, int data) {
 	}
 
+	@Override
+	public int input(int n) {
+		return 0;
+	}
+
 }

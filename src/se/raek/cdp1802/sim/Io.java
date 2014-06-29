@@ -4,4 +4,6 @@ public interface Io {
 
 	void output(int n, int data);
 
+	int input(int n);
+
 }

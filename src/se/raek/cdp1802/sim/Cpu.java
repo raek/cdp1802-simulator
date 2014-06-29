@@ -140,8 +140,12 @@ public class Cpu {
 		} else if (n < 8) { // OUT
 			io.output(n, m.read(s.r[s.x]++));
 			s.r[s.x] &= 0xFFFF;
-		} else {
+		} else if (n == 8) {
 			throw new InstructionNotImplementedException(0x6, n);
+		} else { // INP
+			int data = io.input(n & 0x7);
+			s.d = data;
+			m.write(s.r[s.x], data);
 		}
 	}
 
