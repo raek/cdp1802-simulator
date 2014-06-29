@@ -149,8 +149,9 @@ public class Cpu {
 	}
 
 	private void executeInputOutput(int n) {
-		if (n == 0) {
-			throw new InstructionNotImplementedException(0x6, n);
+		if (n == 0) { // IRX
+			s.r[s.x]++;
+			s.r[s.x] &= 0xFFFF;
 		} else if (n < 8) { // OUT
 			io.output(n, m.read(s.r[s.x]++));
 			s.r[s.x] &= 0xFFFF;
