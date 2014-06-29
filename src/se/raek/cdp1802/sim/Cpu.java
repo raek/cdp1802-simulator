@@ -79,6 +79,12 @@ public class Cpu {
 
 	private void execute(int i, int n) {
 		switch (i) {
+		case 0x1: // INC
+			s.r[n]++;
+			break;
+		case 0x2: // DEC
+			s.r[n]--;
+			break;
 		case 0x3:
 			executeShortBranch(n);
 			break;
@@ -102,6 +108,9 @@ public class Cpu {
 			break;
 		case 0xC:
 			executeLongBranch(n);
+			break;
+		case 0xE: // SEX
+			s.x = n;
 			break;
 		case 0xF:
 			executeArithmeticLogic(n);

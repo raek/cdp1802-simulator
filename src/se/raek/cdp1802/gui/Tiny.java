@@ -97,7 +97,7 @@ public class Tiny {
 
 	private static final Font font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 
-	private static final String program = "F812BFF834AF9FBE8FAE7BC461016202630364046505660667077A3000";
+	private static final String program = "ED1D2DF812BFF834AF9FBE8FAEE07BC461016202630364046505660667077A3000";
 
 	public Tiny() {
 		s = new Cpu.State();
