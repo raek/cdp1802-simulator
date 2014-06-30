@@ -136,8 +136,6 @@ public class Cpu {
 		case 0xF:
 			executeArithmeticLogic(n);
 			break;
-		default:
-			throw new InstructionNotImplementedException(i, n);
 		}
 	}
 
