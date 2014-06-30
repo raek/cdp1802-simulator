@@ -127,6 +127,9 @@ public class Cpu {
 		case 0xC:
 			executeLongBranch(n);
 			break;
+		case 0xD: // SEP
+			s.p = n;
+			break;
 		case 0xE: // SEX
 			s.x = n;
 			break;
