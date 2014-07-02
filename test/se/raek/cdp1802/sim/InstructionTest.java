@@ -40,6 +40,10 @@ public class InstructionTest {
 		}
 	}
 
+	private void singleStep() {
+		cpu.tick();
+	}
+
 	@Test
 	public void testReq() {
 		loadRom("7B7A00");
@@ -52,6 +56,32 @@ public class InstructionTest {
 		loadRom("7B00");
 		runUntilIdle();
 		assertTrue(s.q);
+	}
+
+	@Test
+	public void testGloGhiPloPhi() {
+		loadRom("F812B4F834A494B584A5");
+		singleStep();
+		singleStep();
+		assertEquals(0x1200, s.r[0x4]);
+		singleStep();
+		singleStep();
+		assertEquals(0x1234, s.r[0x4]);
+		singleStep();
+		assertEquals(0x12, s.d);
+		singleStep();
+		assertEquals(0x1200, s.r[0x5]);
+		singleStep();
+		assertEquals(0x34, s.d);
+		singleStep();
+		assertEquals(0x1234, s.r[0x5]);
+	}
+
+	@Test
+	public void testLdi() {
+		loadRom("F8A500");
+		runUntilIdle();
+		assertEquals(0xA5, s.d);
 	}
 
 }
