@@ -26,9 +26,9 @@ import se.raek.cdp1802.util.MemoryMapper;
 import se.raek.cdp1802.util.MemoryWriteProtector;
 import se.raek.cdp1802.util.Utils;
 
-public class Tiny {
+public final class Tiny {
 
-	public class SimpleIo implements Io {
+	private final class SimpleIo implements Io {
 
 		public final int[] outputValues;
 		public final int[] inputValues;
@@ -53,7 +53,7 @@ public class Tiny {
 
 	}
 
-	private class InputListener implements DocumentListener {
+	private final class InputListener implements DocumentListener {
 
 		private final int i;
 		private final JTextField field;
@@ -221,7 +221,8 @@ public class Tiny {
 	}
 
 	private JTextField makeInputField(int i) {
-		JTextField field = new JTextField(String.format("%02X", io.inputValues[i]), 2);
+		JTextField field = new JTextField(String.format("%02X",
+				io.inputValues[i]), 2);
 		field.setFont(font);
 		field.getDocument().addDocumentListener(new InputListener(i, field));
 		return field;

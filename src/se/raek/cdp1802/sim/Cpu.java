@@ -1,8 +1,8 @@
 package se.raek.cdp1802.sim;
 
-public class Cpu {
+public final class Cpu {
 
-	public static class State {
+	public static final class State {
 
 		public int d;
 		public int p;
@@ -15,7 +15,7 @@ public class Cpu {
 
 	}
 
-	public static class InstructionNotImplementedException extends
+	public static final class InstructionNotImplementedException extends
 			RuntimeException {
 
 		private static final long serialVersionUID = 1L;
@@ -203,11 +203,13 @@ public class Cpu {
 			break;
 		case 0x8: // LDI
 			s.d = m.read(s.r[s.p]++);
-			s.r[s.p] &= 0xFFFF;;
+			s.r[s.p] &= 0xFFFF;
+			;
 			break;
 		case 0x9: // ORI
 			s.d = m.read(s.r[s.p]++) | s.d;
-			s.r[s.p] &= 0xFFFF;;
+			s.r[s.p] &= 0xFFFF;
+			;
 			break;
 		default:
 			throw new InstructionNotImplementedException(0xF, n);
