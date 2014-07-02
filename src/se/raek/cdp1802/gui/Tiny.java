@@ -21,75 +21,12 @@ import javax.swing.event.DocumentListener;
 import se.raek.cdp1802.sim.Cpu;
 import se.raek.cdp1802.sim.Io;
 import se.raek.cdp1802.sim.Memory;
+import se.raek.cdp1802.util.ArrayMemory;
+import se.raek.cdp1802.util.MemoryMapper;
+import se.raek.cdp1802.util.MemoryWriteProtector;
+import se.raek.cdp1802.util.Utils;
 
 public class Tiny {
-
-	private static int hexByteFromString(String s) {
-		if (s.length() != 2) {
-			throw new IllegalArgumentException();
-		}
-		return hexByte(s.charAt(0), s.charAt(1));
-	}
-
-	private static int hexByte(char high, char low) {
-		int highInt = hexDigit(high);
-		int lowInt = hexDigit(low);
-		return (highInt << 4) | lowInt;
-	}
-
-	private static int hexDigit(char h) {
-		if (h >= '0' && h <= '9') {
-			return h - '0';
-		} else if (h >= 'a' && h <= 'f') {
-			return h - 'a' + 10;
-		} else if (h >= 'A' && h <= 'F') {
-			return h - 'A' + 10;
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
-
-	public static class SimpleMemory implements Memory {
-
-		private final int[] rom;
-		private final int[] ram;
-
-		public SimpleMemory(int romSize, String content, int ramSize) {
-			int hexLength = content.length();
-			if (hexLength % 2 != 0) {
-				throw new IllegalArgumentException();
-			}
-			int byteLength = hexLength / 2;
-			if (byteLength > romSize) {
-				throw new IllegalArgumentException();
-			}
-			rom = new int[romSize];
-			ram = new int[ramSize];
-			for (int i = 0; i < byteLength; i++) {
-				rom[i] = hexByte(content.charAt(2 * i),
-						content.charAt(2 * i + 1));
-			}
-		}
-
-		@Override
-		public int read(int addr) {
-			if (addr < rom.length) {
-				return rom[addr];
-			} else {
-				return ram[addr - rom.length];
-			}
-		}
-
-		@Override
-		public void write(int addr, int data) {
-			if (addr < rom.length) {
-				throw new IllegalStateException();
-			} else {
-				ram[addr - rom.length] = data;
-			}
-		}
-
-	}
 
 	public class SimpleIo implements Io {
 
@@ -145,7 +82,7 @@ public class Tiny {
 
 		private void parse() {
 			try {
-				int value = hexByteFromString(field.getText());
+				int value = Utils.hexByteFromString(field.getText());
 				io.inputValues[i] = value;
 				field.setForeground(Color.BLACK);
 			} catch (IllegalArgumentException e) {
@@ -167,7 +104,7 @@ public class Tiny {
 	}
 
 	private Cpu.State s;
-	private SimpleMemory m;
+	private Memory m;
 	private SimpleIo io;
 	private Cpu cpu;
 
@@ -193,7 +130,15 @@ public class Tiny {
 
 	public Tiny(String program) {
 		s = new Cpu.State();
-		m = new SimpleMemory(256, program, 256);
+		{
+			Memory rom = new ArrayMemory(0x100);
+			Utils.loadHex(rom, program);
+			Memory ram = new ArrayMemory(0x100);
+			MemoryMapper mm = new MemoryMapper();
+			mm.map(0x0000, 0x100, new MemoryWriteProtector(rom));
+			mm.map(0x0100, 0x100, ram);
+			m = mm;
+		}
 		io = new SimpleIo();
 		cpu = new Cpu(s, m, io);
 
