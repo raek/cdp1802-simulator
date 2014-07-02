@@ -12,6 +12,7 @@ public final class Cpu {
 		public boolean df;
 		public boolean ie = true;
 		public boolean q;
+		public boolean idle;
 
 	}
 
@@ -43,6 +44,9 @@ public final class Cpu {
 	}
 
 	public void tick() {
+		if (s.idle) {
+			return;
+		}
 		int in = fetch();
 		int i = highNibble(in);
 		int n = lowNibble(in);
@@ -82,8 +86,8 @@ public final class Cpu {
 	private void execute(int i, int n) {
 		switch (i) {
 		case 0x0:
-			if (n == 0) {
-				throw new InstructionNotImplementedException(0, 0);
+			if (n == 0) { // IDL
+				s.idle = true;
 			} else { // LDN
 				s.d = m.read(s.r[n]);
 			}

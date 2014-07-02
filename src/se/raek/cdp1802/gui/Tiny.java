@@ -118,6 +118,7 @@ public final class Tiny {
 	private JPanel[] inputPanels;
 	private JLabel dLabel;
 	private JLabel qLabel;
+	private JLabel idleLabel;
 	private JLabel pLabel;
 	private JLabel xLabel;
 	private JButton clockButton;
@@ -152,6 +153,7 @@ public final class Tiny {
 		inputPanels = new JPanel[7];
 		dLabel = makeLabel();
 		qLabel = makeLabel();
+		idleLabel = makeLabel();
 		pLabel = makeLabel();
 		xLabel = makeLabel();
 		clockButton = new JButton("clock");
@@ -193,12 +195,13 @@ public final class Tiny {
 			panel1.add(rLabels[i]);
 		}
 		frame.add(panel1);
-		panel2.setLayout(new GridLayout(9, 1, 0, 0));
+		panel2.setLayout(new GridLayout(10, 1, 0, 0));
 		for (int i = 0; i < 7; i++) {
 			panel2.add(outputLabels[i]);
 		}
 		panel2.add(dLabel);
 		panel2.add(qLabel);
+		panel2.add(idleLabel);
 		frame.add(panel2);
 		panel3.setLayout(new GridLayout(10, 1, 0, 0));
 		for (int i = 0; i < 7; i++) {
@@ -261,6 +264,7 @@ public final class Tiny {
 		}
 		setLabelText(dLabel, String.format("D=%02X", s.d));
 		setLabelText(qLabel, s.q ? "Q=1" : "Q=0");
+		setLabelText(idleLabel, s.idle ? "idle" : "run");
 		setLabelText(pLabel, String.format("P=%X", s.p));
 		setLabelText(xLabel, String.format("X=%X", s.x));
 	}
