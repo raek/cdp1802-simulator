@@ -45,6 +45,16 @@ public class InstructionTest {
 	}
 
 	@Test
+	public void testIncDecWrapAround() {
+		loadRom("2414");
+		assertEquals(0x0000, s.r[0x4]);
+		singleStep();
+		assertEquals(0xFFFF, s.r[0x4]);
+		singleStep();
+		assertEquals(0x0000, s.r[0x4]);
+	}
+
+	@Test
 	public void testReq() {
 		loadRom("7B7A00");
 		runUntilIdle();
