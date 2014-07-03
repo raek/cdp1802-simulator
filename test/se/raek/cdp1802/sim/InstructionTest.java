@@ -1,9 +1,11 @@
 package se.raek.cdp1802.sim;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 
 import se.raek.cdp1802.util.ArrayMemory;
 import se.raek.cdp1802.util.MemoryMapper;
@@ -26,7 +28,7 @@ public class InstructionTest {
 		MemoryMapper mm = new MemoryMapper();
 		mm.map(0x0000, 0x100, new MemoryWriteProtector(rom));
 		mm.map(0x0100, 0x100, ram);
-		io = new MockIo();
+		io = mock(Io.class);
 		cpu = new Cpu(s, mm, io);
 	}
 
@@ -52,6 +54,17 @@ public class InstructionTest {
 		assertEquals(0xFFFF, s.r[0x4]);
 		singleStep();
 		assertEquals(0x0000, s.r[0x4]);
+	}
+
+	@Test
+	public void testOut() {
+		loadRom("611162226333644465556666677700");
+		runUntilIdle();
+		InOrder inOrder = inOrder(io);
+		for (int i = 1; i <= 7; i++) {
+			inOrder.verify(io).output(i, (i << 4) | i);	
+		}
+		inOrder.verifyNoMoreInteractions();
 	}
 
 	@Test
