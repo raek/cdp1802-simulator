@@ -62,6 +62,13 @@ public class InstructionTest extends TestBase {
 	}
 
 	@Test
+	public void testNop() {
+		loadRom("C4");
+		singleStep();
+		assertR(0x0, 0x0001);
+	}
+
+	@Test
 	public void testOr() {
 		loadRom("F80FF100");
 		loadRam("55");
