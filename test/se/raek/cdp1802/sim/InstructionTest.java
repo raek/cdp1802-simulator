@@ -150,6 +150,21 @@ public class InstructionTest extends TestBase {
 	}
 
 	@Test
+	public void testSd() {
+		loadRom("F802F5F805F5");
+		loadRam("03");
+		setupXToRamStart();
+		singleStep();
+		singleStep();
+		assertD(0x01);
+		assertDf(true);
+		singleStep();
+		singleStep();
+		assertD(0xFE);
+		assertDf(false);
+	}
+
+	@Test
 	public void testShr() {
 		loadRom("F83CF6F83DF6");
 		singleStep();
@@ -194,6 +209,19 @@ public class InstructionTest extends TestBase {
 		singleStep();
 		assertD(0x01);
 		assertDf(true);
+	}
+
+	@Test
+	public void testSdi() {
+		loadRom("F802FD03F805FD03");
+		singleStep();
+		singleStep();
+		assertD(0x01);
+		assertDf(true);
+		singleStep();
+		singleStep();
+		assertD(0xFE);
+		assertDf(false);
 	}
 
 	@Test

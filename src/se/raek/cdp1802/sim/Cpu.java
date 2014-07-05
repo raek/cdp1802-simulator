@@ -235,6 +235,13 @@ public final class Cpu {
 			s.df = sum > 0xFF;
 			break;
 		}
+		case 0x5: // SD
+		{
+			int diff = m.read(s.r[s.x]) - s.d;
+			s.d = diff & 0xFF;
+			s.df = diff >= 0x00;
+			break;
+		}
 		case 0x6: // SHR
 			s.df = (s.d & 0x01) != 0x00;
 			s.d = s.d >>> 1;
@@ -260,6 +267,13 @@ public final class Cpu {
 			int sum = m.read(s.r[s.p]++) + s.d;
 			s.d = sum & 0xFF;
 			s.df = sum > 0xFF;
+			break;
+		}
+		case 0xD: // SDI
+		{
+			int diff = m.read(s.r[s.p]++) - s.d;
+			s.d = diff & 0xFF;
+			s.df = diff >= 0x00;
 			break;
 		}
 		case 0xE: // SHL
