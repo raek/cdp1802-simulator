@@ -62,14 +62,26 @@ public class InstructionTest {
 		cpu.tick();
 	}
 
+	private void assertD(int expected) {
+		assertEquals(expected, s.d);
+	}
+
+	private void assertR(int r, int expected) {
+		assertEquals(expected, s.r[r]);
+	}
+
+	private void assertQ(boolean expected) {
+		assertEquals(expected, s.q);
+	}
+
 	@Test
 	public void testIncDecWrapAround() {
 		loadRom("2414");
-		assertEquals(0x0000, s.r[0x4]);
+		assertR(0x4, 0x0000);
 		singleStep();
-		assertEquals(0xFFFF, s.r[0x4]);
+		assertR(0x4, 0xFFFF);
 		singleStep();
-		assertEquals(0x0000, s.r[0x4]);
+		assertR(0x4, 0x0000);
 	}
 
 	@Test
@@ -87,14 +99,14 @@ public class InstructionTest {
 	public void testReq() {
 		loadRom("7B7A00");
 		runUntilIdle();
-		assertFalse(s.q);
+		assertQ(false);
 	}
 
 	@Test
 	public void testSeq() {
 		loadRom("7B00");
 		runUntilIdle();
-		assertTrue(s.q);
+		assertQ(true);
 	}
 
 	@Test
@@ -102,18 +114,18 @@ public class InstructionTest {
 		loadRom("F812B4F834A494B584A5");
 		singleStep();
 		singleStep();
-		assertEquals(0x1200, s.r[0x4]);
+		assertR(0x4, 0x1200);
 		singleStep();
 		singleStep();
-		assertEquals(0x1234, s.r[0x4]);
+		assertR(0x4, 0x1234);
 		singleStep();
-		assertEquals(0x12, s.d);
+		assertD(0x12);
 		singleStep();
-		assertEquals(0x1200, s.r[0x5]);
+		assertR(0x5, 0x1200);
 		singleStep();
-		assertEquals(0x34, s.d);
+		assertD(0x34);
 		singleStep();
-		assertEquals(0x1234, s.r[0x5]);
+		assertR(0x5, 0x1234);
 	}
 
 	@Test
@@ -122,21 +134,21 @@ public class InstructionTest {
 		loadRam("55");
 		setupXToRamStart();
 		runUntilIdle();
-		assertEquals(0x5F, s.d);
+		assertD(0x5F);
 	}
 
 	@Test
 	public void testOri() {
 		loadRom("F80FF95500");
 		runUntilIdle();
-		assertEquals(0x5F, s.d);
+		assertD(0x5F);
 	}
 
 	@Test
 	public void testLdi() {
 		loadRom("F8A500");
 		runUntilIdle();
-		assertEquals(0xA5, s.d);
+		assertD(0xA5);
 	}
 
 }
