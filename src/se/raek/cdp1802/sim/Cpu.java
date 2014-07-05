@@ -228,6 +228,13 @@ public final class Cpu {
 		case 0x3: // XOR
 			s.d = m.read(s.r[s.x]) ^ s.d;
 			break;
+		case 0x4: // ADD
+		{
+			int sum = m.read(s.r[s.x]) + s.d;
+			s.d = sum & 0xFF;
+			s.df = sum > 0xFF;
+			break;
+		}
 		case 0x6: // SHR
 			s.df = (s.d & 0x01) != 0x00;
 			s.d = s.d >>> 1;
@@ -248,6 +255,13 @@ public final class Cpu {
 			s.d = m.read(s.r[s.p]++) ^ s.d;
 			s.r[s.p] &= 0xFFFF;
 			break;
+		case 0xC: // ADI
+		{
+			int sum = m.read(s.r[s.p]++) + s.d;
+			s.d = sum & 0xFF;
+			s.df = sum > 0xFF;
+			break;
+		}
 		case 0xE: // SHL
 			s.df = (s.d & 0x80) != 0x00;
 			s.d = (s.d << 1) & 0xFF;
