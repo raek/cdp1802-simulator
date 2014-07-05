@@ -15,6 +15,7 @@ public class TestBase {
 	private Cpu.State s;
 	private Memory rom;
 	private Memory ram;
+	private Memory m;
 	protected Io io;
 	private Cpu cpu;
 
@@ -32,8 +33,9 @@ public class TestBase {
 		MemoryMapper mm = new MemoryMapper();
 		mm.map(romStart, romLength, new MemoryWriteProtector(rom));
 		mm.map(ramStart, ramLength, ram);
+		m = mm;
 		io = mock(Io.class);
-		cpu = new Cpu(s, mm, io);
+		cpu = new Cpu(s, m, io);
 	}
 
 	protected void loadRom(String hexString) {
@@ -69,6 +71,10 @@ public class TestBase {
 
 	protected void assertR(int r, int expected) {
 		assertEquals(expected, s.r[r]);
+	}
+
+	protected void assertMX(int expected) {
+		assertEquals(expected, m.read(s.r[s.x]));
 	}
 
 	protected void assertDf(boolean expected) {

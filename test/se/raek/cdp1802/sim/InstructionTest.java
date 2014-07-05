@@ -1,6 +1,7 @@
 package se.raek.cdp1802.sim;
 
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -24,6 +25,23 @@ public class InstructionTest extends TestBase {
 		InOrder inOrder = inOrder(io);
 		for (int i = 1; i <= 7; i++) {
 			inOrder.verify(io).output(i, (i << 4) | i);
+		}
+		inOrder.verifyNoMoreInteractions();
+	}
+
+	@Test
+	public void testInp() {
+		loadRom("696A6B6C6D6E6F");
+		setupXToRamStart();
+		for (int i = 1; i <= 7; i++) {
+			when(io.input(i)).thenReturn((i << 4) | i);
+		}
+		InOrder inOrder = inOrder(io);
+		for (int i = 1; i <= 7; i++) {
+			singleStep();
+			assertD((i << 4) | i);
+			assertMX((i << 4) | i);
+			inOrder.verify(io).input(i);
 		}
 		inOrder.verifyNoMoreInteractions();
 	}
