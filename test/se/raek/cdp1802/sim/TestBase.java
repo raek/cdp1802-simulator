@@ -67,6 +67,10 @@ public class TestBase {
 		assertEquals(expected, s.r[r]);
 	}
 
+	protected void assertDf(boolean expected) {
+		assertEquals(expected, s.df);
+	}
+
 	protected void assertQ(boolean expected) {
 		assertEquals(expected, s.q);
 	}
