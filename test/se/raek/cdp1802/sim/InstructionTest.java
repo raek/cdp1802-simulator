@@ -20,20 +20,36 @@ public class InstructionTest {
 	private Io io;
 	private Cpu cpu;
 
+	private static final int romStart = 0x0000;
+	private static final int romLength = 0x100;
+	private static final int ramStart = 0x0100;
+	private static final int ramLength = 0x100;
+	
+	private static final int defaultX = 0xF; 
+
 	@Before
 	public void setUp() {
 		s = new Cpu.State();
 		rom = new ArrayMemory(0x100);
 		ram = new ArrayMemory(0x100);
 		MemoryMapper mm = new MemoryMapper();
-		mm.map(0x0000, 0x100, new MemoryWriteProtector(rom));
-		mm.map(0x0100, 0x100, ram);
+		mm.map(romStart, romLength, new MemoryWriteProtector(rom));
+		mm.map(ramStart, ramLength, ram);
 		io = mock(Io.class);
 		cpu = new Cpu(s, mm, io);
 	}
 
 	private void loadRom(String hexString) {
 		Utils.loadHex(rom, hexString);
+	}
+
+	private void loadRam(String hexString) {
+		Utils.loadHex(ram, hexString);
+	}
+
+	private void setupXToRamStart() {
+		s.r[defaultX] = ramStart;
+		s.x = defaultX;
 	}
 
 	private void runUntilIdle() {
@@ -98,6 +114,22 @@ public class InstructionTest {
 		assertEquals(0x34, s.d);
 		singleStep();
 		assertEquals(0x1234, s.r[0x5]);
+	}
+
+	@Test
+	public void testOr() {
+		loadRom("F80FF100");
+		loadRam("55");
+		setupXToRamStart();
+		runUntilIdle();
+		assertEquals(0x5F, s.d);
+	}
+
+	@Test
+	public void testOri() {
+		loadRom("F80FF95500");
+		runUntilIdle();
+		assertEquals(0x5F, s.d);
 	}
 
 	@Test

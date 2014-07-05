@@ -127,7 +127,7 @@ public final class Tiny {
 
 	private static final Font font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 
-	private static final String testProgram = "EDF801BCBDF800ACADF8A15DF81AF1F885F958F8D05DDD2DF85A7360F800F0F800722DF8A55CF8000CF8004C2CC469612D6A622D6B632D6C642D6D652D6E662D6F672D3000";
+	private static final String testProgram = "EDF801BCBDF800ACADF8D05DDD2DF85A7360F800F0F800722DF8A55CF8000CF8004C2CC469612D6A622D6B632D6C642D6D652D6E662D6F672D3000";
 
 	public Tiny(String program) {
 		s = new Cpu.State();
@@ -238,7 +238,6 @@ public final class Tiny {
 		panel.add(label);
 		panel.add(field);
 		return panel;
-
 	}
 
 	private void setLabelText(JLabel label, String newText) {
