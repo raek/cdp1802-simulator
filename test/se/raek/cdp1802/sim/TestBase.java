@@ -59,6 +59,10 @@ public class TestBase {
 		cpu.tick();
 	}
 
+	protected void setDf(boolean df) {
+		s.df = df;
+	}
+
 	protected void assertD(int expected) {
 		assertEquals(expected, s.d);
 	}

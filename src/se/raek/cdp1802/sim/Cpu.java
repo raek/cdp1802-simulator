@@ -177,12 +177,29 @@ public final class Cpu {
 		case 0x3: // STXD
 			m.write(s.r[s.x]--, s.d);
 			break;
+		case 0x6: // SHRC
+		{
+			int oldD = s.d;
+			boolean oldDf = s.df;
+			s.d = (s.d >>> 1) | (oldDf ? 0x80 : 0x00);
+			s.df = (oldD & 0x01) != 0x00;
+			break;
+		}
 		case 0xA: // REQ
 			s.q = false;
 			break;
 		case 0xB: // SEQ
 			s.q = true;
 			break;
+		case 0xE: // SHLC
+		{
+			int oldD = s.d;
+			boolean oldDf = s.df;
+			s.d = (oldD << 1) | (oldDf ? 0x01 : 0x00);
+			s.d &= 0xFF;
+			s.df = (oldD & 0x80) != 0x00;
+			break;
+		}
 		default:
 			throw new InstructionNotImplementedException(0x7, n);
 		}

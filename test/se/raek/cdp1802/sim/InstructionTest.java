@@ -29,6 +29,31 @@ public class InstructionTest extends TestBase {
 	}
 
 	@Test
+	public void testShrc() {
+		loadRom("F83C76F83D76F83C76F83D76");
+		setDf(false);
+		singleStep();
+		singleStep();
+		assertD(0x1E);
+		assertDf(false);
+		setDf(false);
+		singleStep();
+		singleStep();
+		assertD(0x1E);
+		assertDf(true);
+		setDf(true);
+		singleStep();
+		singleStep();
+		assertD(0x9E);
+		assertDf(false);
+		setDf(true);
+		singleStep();
+		singleStep();
+		assertD(0x9E);
+		assertDf(true);
+	}
+
+	@Test
 	public void testReq() {
 		loadRom("7B7A00");
 		runUntilIdle();
@@ -40,6 +65,31 @@ public class InstructionTest extends TestBase {
 		loadRom("7B00");
 		runUntilIdle();
 		assertQ(true);
+	}
+
+	@Test
+	public void testShlc() {
+		loadRom("F83C7EF8BC7EF83C7EF8BC7E");
+		setDf(false);
+		singleStep();
+		singleStep();
+		assertD(0x78);
+		assertDf(false);
+		setDf(false);
+		singleStep();
+		singleStep();
+		assertD(0x78);
+		assertDf(true);
+		setDf(true);
+		singleStep();
+		singleStep();
+		assertD(0x79);
+		assertDf(false);
+		setDf(true);
+		singleStep();
+		singleStep();
+		assertD(0x79);
+		assertDf(true);
 	}
 
 	@Test
