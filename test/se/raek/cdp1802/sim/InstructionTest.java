@@ -1,78 +1,11 @@
 package se.raek.cdp1802.sim;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.inOrder;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import se.raek.cdp1802.util.ArrayMemory;
-import se.raek.cdp1802.util.MemoryMapper;
-import se.raek.cdp1802.util.MemoryWriteProtector;
-import se.raek.cdp1802.util.Utils;
-
-public class InstructionTest {
-
-	private Cpu.State s;
-	private Memory rom;
-	private Memory ram;
-	private Io io;
-	private Cpu cpu;
-
-	private static final int romStart = 0x0000;
-	private static final int romLength = 0x100;
-	private static final int ramStart = 0x0100;
-	private static final int ramLength = 0x100;
-	
-	private static final int defaultX = 0xF; 
-
-	@Before
-	public void setUp() {
-		s = new Cpu.State();
-		rom = new ArrayMemory(0x100);
-		ram = new ArrayMemory(0x100);
-		MemoryMapper mm = new MemoryMapper();
-		mm.map(romStart, romLength, new MemoryWriteProtector(rom));
-		mm.map(ramStart, ramLength, ram);
-		io = mock(Io.class);
-		cpu = new Cpu(s, mm, io);
-	}
-
-	private void loadRom(String hexString) {
-		Utils.loadHex(rom, hexString);
-	}
-
-	private void loadRam(String hexString) {
-		Utils.loadHex(ram, hexString);
-	}
-
-	private void setupXToRamStart() {
-		s.r[defaultX] = ramStart;
-		s.x = defaultX;
-	}
-
-	private void runUntilIdle() {
-		while (!s.idle) {
-			cpu.tick();
-		}
-	}
-
-	private void singleStep() {
-		cpu.tick();
-	}
-
-	private void assertD(int expected) {
-		assertEquals(expected, s.d);
-	}
-
-	private void assertR(int r, int expected) {
-		assertEquals(expected, s.r[r]);
-	}
-
-	private void assertQ(boolean expected) {
-		assertEquals(expected, s.q);
-	}
+public class InstructionTest extends TestBase {
 
 	@Test
 	public void testIncDecWrapAround() {
