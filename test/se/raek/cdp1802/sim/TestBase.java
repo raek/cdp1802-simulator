@@ -51,6 +51,11 @@ public class TestBase {
 		s.x = defaultX;
 	}
 
+	protected void setupXToRamEnd() {
+		s.r[defaultX] = ramStart + ramLength - 1;
+		s.x = defaultX;
+	}
+
 	protected void runUntilIdle() {
 		while (!s.idle) {
 			cpu.tick();
@@ -75,6 +80,10 @@ public class TestBase {
 
 	protected void assertMX(int expected) {
 		assertEquals(expected, m.read(s.r[s.x]));
+	}
+
+	protected void assertXAtRamEnd() {
+		assertEquals(ramStart + ramLength - 1, s.r[s.x]);
 	}
 
 	protected void assertDf(boolean expected) {

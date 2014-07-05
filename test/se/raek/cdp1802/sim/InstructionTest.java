@@ -47,6 +47,21 @@ public class InstructionTest extends TestBase {
 	}
 
 	@Test
+	public void testIrxLdxaStxdLdx() {
+		loadRom("F80173F80273F80373607272F000");
+		setupXToRamEnd();
+		for (int i = 0; i < 8; i++) {
+			singleStep();
+		}
+		assertD(0x03);
+		singleStep();
+		assertD(0x02);
+		singleStep();
+		assertD(0x01);
+		assertXAtRamEnd();
+	}
+
+	@Test
 	public void testShrc() {
 		loadRom("F83C76F83D76F83C76F83D76");
 		setDf(false);
