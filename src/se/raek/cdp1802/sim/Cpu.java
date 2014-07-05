@@ -246,6 +246,13 @@ public final class Cpu {
 			s.df = (s.d & 0x01) != 0x00;
 			s.d = s.d >>> 1;
 			break;
+		case 0x7: // SM
+		{
+			int diff = s.d - m.read(s.r[s.x]);
+			s.d = diff & 0xFF;
+			s.df = diff >= 0x00;
+			break;
+		}
 		case 0x8: // LDI
 			s.d = m.read(s.r[s.p]++);
 			s.r[s.p] &= 0xFFFF;
@@ -280,8 +287,13 @@ public final class Cpu {
 			s.df = (s.d & 0x80) != 0x00;
 			s.d = (s.d << 1) & 0xFF;
 			break;
-		default:
-			throw new InstructionNotImplementedException(0xF, n);
+		case 0xF: // SMI
+		{
+			int diff = s.d - m.read(s.r[s.p]++);
+			s.d = diff & 0xFF;
+			s.df = diff >= 0x00;
+			break;
+		}
 		}
 	}
 
