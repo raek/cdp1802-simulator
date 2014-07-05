@@ -23,7 +23,7 @@ public class InstructionTest extends TestBase {
 		runUntilIdle();
 		InOrder inOrder = inOrder(io);
 		for (int i = 1; i <= 7; i++) {
-			inOrder.verify(io).output(i, (i << 4) | i);	
+			inOrder.verify(io).output(i, (i << 4) | i);
 		}
 		inOrder.verifyNoMoreInteractions();
 	}
@@ -69,19 +69,19 @@ public class InstructionTest extends TestBase {
 	}
 
 	@Test
-	public void testOr() {
-		loadRom("F80FF100");
-		loadRam("55");
+	public void testOrAndXor() {
+		loadRom("F855F1F855F2F855F3");
+		loadRam("0F");
 		setupXToRamStart();
-		runUntilIdle();
+		singleStep();
+		singleStep();
 		assertD(0x5F);
-	}
-
-	@Test
-	public void testOri() {
-		loadRom("F80FF95500");
-		runUntilIdle();
-		assertD(0x5F);
+		singleStep();
+		singleStep();
+		assertD(0x05);
+		singleStep();
+		singleStep();
+		assertD(0x5A);
 	}
 
 	@Test
@@ -89,6 +89,20 @@ public class InstructionTest extends TestBase {
 		loadRom("F8A500");
 		runUntilIdle();
 		assertD(0xA5);
+	}
+
+	@Test
+	public void testOriAniXri() {
+		loadRom("F80FF955F80FFA55F80FFB55");
+		singleStep();
+		singleStep();
+		assertD(0x5F);
+		singleStep();
+		singleStep();
+		assertD(0x05);
+		singleStep();
+		singleStep();
+		assertD(0x5A);
 	}
 
 }

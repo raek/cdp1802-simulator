@@ -205,15 +205,27 @@ public final class Cpu {
 		case 0x1: // OR
 			s.d = m.read(s.r[s.x]) | s.d;
 			break;
+		case 0x2: // AND
+			s.d = m.read(s.r[s.x]) & s.d;
+			break;
+		case 0x3: // XOR
+			s.d = m.read(s.r[s.x]) ^ s.d;
+			break;
 		case 0x8: // LDI
 			s.d = m.read(s.r[s.p]++);
 			s.r[s.p] &= 0xFFFF;
-			;
 			break;
 		case 0x9: // ORI
 			s.d = m.read(s.r[s.p]++) | s.d;
 			s.r[s.p] &= 0xFFFF;
-			;
+			break;
+		case 0xA: // ANI
+			s.d = m.read(s.r[s.p]++) & s.d;
+			s.r[s.p] &= 0xFFFF;
+			break;
+		case 0xB: // XRI
+			s.d = m.read(s.r[s.p]++) ^ s.d;
+			s.r[s.p] &= 0xFFFF;
 			break;
 		default:
 			throw new InstructionNotImplementedException(0xF, n);
