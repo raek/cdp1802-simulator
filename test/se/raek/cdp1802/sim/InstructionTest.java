@@ -19,25 +19,27 @@ public class InstructionTest extends TestBase {
 
 	@Test
 	public void testOut() {
-		loadRom("611162226333644465556666677700");
-		runUntilIdle();
+		for (int i = 1; i <= 7; i++) {
+			int pattern = (i << 4) | i;
+			execute(0x60 + i, pattern);
+		}
 		InOrder inOrder = inOrder(io);
 		for (int i = 1; i <= 7; i++) {
-			inOrder.verify(io).output(i, (i << 4) | i);
+			int pattern = (i << 4) | i;
+			inOrder.verify(io).output(i, pattern);
 		}
 		inOrder.verifyNoMoreInteractions();
 	}
 
 	@Test
 	public void testInp() {
-		loadRom("696A6B6C6D6E6F");
 		setupXToRamStart();
 		for (int i = 1; i <= 7; i++) {
 			when(io.input(i)).thenReturn((i << 4) | i);
 		}
 		InOrder inOrder = inOrder(io);
 		for (int i = 1; i <= 7; i++) {
-			singleStep();
+			execute(0x68 + i);
 			assertD((i << 4) | i);
 			assertMX((i << 4) | i);
 			inOrder.verify(io).input(i);
@@ -47,15 +49,20 @@ public class InstructionTest extends TestBase {
 
 	@Test
 	public void testIrxLdxaStxdLdx() {
-		loadRom("F80173F80273F80373607272F000");
 		setupXToRamEnd();
-		for (int i = 0; i < 8; i++) {
-			singleStep();
-		}
+		setD(0x01);
+		execute(0x73);
+		setD(0x02);
+		execute(0x73);
+		setD(0x03);
+		execute(0x73);
+		setD(0x00);
+		execute(0x60);
+		execute(0x72);
 		assertD(0x03);
-		singleStep();
+		execute(0x72);
 		assertD(0x02);
-		singleStep();
+		execute(0xF0);
 		assertD(0x01);
 		assertXAtRamEnd();
 	}
@@ -147,20 +154,19 @@ public class InstructionTest extends TestBase {
 
 	@Test
 	public void testGloGhiPloPhi() {
-		loadRom("F812B4F834A494B584A5");
-		singleStep();
-		singleStep();
+		setD(0x12);
+		execute(0xB4);
 		assertR(0x4, 0x1200);
-		singleStep();
-		singleStep();
+		setD(0x34);
+		execute(0xA4);
 		assertR(0x4, 0x1234);
-		singleStep();
+		execute(0x94);
 		assertD(0x12);
-		singleStep();
+		execute(0xB5);
 		assertR(0x5, 0x1200);
-		singleStep();
+		execute(0x84);
 		assertD(0x34);
-		singleStep();
+		execute(0xA5);
 		assertR(0x5, 0x1234);
 	}
 
