@@ -56,6 +56,11 @@ public class TestBase {
 		s.x = defaultX;
 	}
 
+	protected void setupMX(int data) {
+		setupXToRamStart();
+		m.write(ramStart, data);
+	}
+
 	protected void runUntilIdle() {
 		while (!s.idle) {
 			cpu.tick();
@@ -64,6 +69,27 @@ public class TestBase {
 
 	protected void singleStep() {
 		cpu.tick();
+	}
+
+	protected void execute(int instruction) {
+		rom.write(0, instruction);
+		s.p = 0x0;
+		s.r[s.p] = romStart;
+		s.idle = false;
+		cpu.tick();
+	}
+
+	protected void execute(int instruction, int immediateData) {
+		rom.write(0, instruction);
+		rom.write(1, immediateData);
+		s.p = 0x0;
+		s.r[s.p] = romStart;
+		s.idle = false;
+		cpu.tick();
+	}
+
+	protected void setD(int d) {
+		s.d = d;
 	}
 
 	protected void setDf(boolean df) {

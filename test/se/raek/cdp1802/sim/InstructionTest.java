@@ -10,11 +10,10 @@ public class InstructionTest extends TestBase {
 
 	@Test
 	public void testIncDecWrapAround() {
-		loadRom("2414");
 		assertR(0x4, 0x0000);
-		singleStep();
+		execute(0x24);
 		assertR(0x4, 0xFFFF);
-		singleStep();
+		execute(0x14);
 		assertR(0x4, 0x0000);
 	}
 
@@ -62,65 +61,86 @@ public class InstructionTest extends TestBase {
 	}
 
 	@Test
-	public void testShrc() {
-		loadRom("F83C76F83D76F83C76F83D76");
+	public void testShrcDfZeroInZeroOut() {
+		setD(0x3C);
 		setDf(false);
-		singleStep();
-		singleStep();
+		execute(0x76);
 		assertD(0x1E);
 		assertDf(false);
+	}
+
+	@Test
+	public void testShrcDfZeroInOneOut() {
+		setD(0x3D);
 		setDf(false);
-		singleStep();
-		singleStep();
+		execute(0x76);
 		assertD(0x1E);
 		assertDf(true);
+	}
+
+	@Test
+	public void testShrcDfOneInZeroOut() {
+		setD(0x3C);
 		setDf(true);
-		singleStep();
-		singleStep();
+		execute(0x76);
 		assertD(0x9E);
 		assertDf(false);
+	}
+
+	@Test
+	public void testShrcDfOneInOneOut() {
+		setD(0x3D);
 		setDf(true);
-		singleStep();
-		singleStep();
+		execute(0x76);
 		assertD(0x9E);
 		assertDf(true);
 	}
 
 	@Test
 	public void testReq() {
-		loadRom("7B7A00");
-		runUntilIdle();
+		execute(0x7B);
+		execute(0x7A);
 		assertQ(false);
 	}
 
 	@Test
 	public void testSeq() {
-		loadRom("7B00");
-		runUntilIdle();
+		execute(0x7B);
 		assertQ(true);
 	}
 
 	@Test
-	public void testShlc() {
-		loadRom("F83C7EF8BC7EF83C7EF8BC7E");
+	public void testShlcDfZeroInZeroOut() {
+		setD(0x3C);
 		setDf(false);
-		singleStep();
-		singleStep();
+		execute(0x7E);
 		assertD(0x78);
 		assertDf(false);
+	}
+
+	@Test
+	public void testShlcDfZeroInOneOut() {
+		setD(0xBC);
 		setDf(false);
-		singleStep();
-		singleStep();
+		execute(0x7E);
 		assertD(0x78);
 		assertDf(true);
+	}
+
+	@Test
+	public void testShlcDfOneInZeroOut() {
+		setD(0x3C);
 		setDf(true);
-		singleStep();
-		singleStep();
+		execute(0x7E);
 		assertD(0x79);
 		assertDf(false);
+	}
+
+	@Test
+	public void testShlcDfOneInOneOut() {
+		setD(0xBC);
 		setDf(true);
-		singleStep();
-		singleStep();
+		execute(0x7E);
 		assertD(0x79);
 		assertDf(true);
 	}
@@ -146,154 +166,191 @@ public class InstructionTest extends TestBase {
 
 	@Test
 	public void testNop() {
-		loadRom("C4");
-		singleStep();
+		execute(0xC4);
 		assertR(0x0, 0x0001);
 	}
 
 	@Test
-	public void testOrAndXor() {
-		loadRom("F855F1F855F2F855F3");
-		loadRam("0F");
-		setupXToRamStart();
-		singleStep();
-		singleStep();
+	public void testOr() {
+		setupMX(0x0F);
+		setD(0x55);
+		execute(0xF1);
 		assertD(0x5F);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testAnd() {
+		setupMX(0x0F);
+		setD(0x55);
+		execute(0xF2);
 		assertD(0x05);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testXor() {
+		setupMX(0x0F);
+		setD(0x55);
+		execute(0xF3);
 		assertD(0x5A);
 	}
 
 	@Test
 	public void testAdd() {
-		loadRom("F802F4F8FEF4");
-		loadRam("03");
-		setupXToRamStart();
-		singleStep();
-		singleStep();
+		setupMX(0x03);
+		setD(0x02);
+		execute(0xF4);
 		assertD(0x05);
 		assertDf(false);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testAddOverflow() {
+		setupMX(0x03);
+		setD(0xFE);
+		execute(0xF4);
 		assertD(0x01);
 		assertDf(true);
 	}
 
 	@Test
 	public void testSd() {
-		loadRom("F802F5F805F5");
-		loadRam("03");
-		setupXToRamStart();
-		singleStep();
-		singleStep();
+		setupMX(0x03);
+		setD(0x02);
+		execute(0xF5);
 		assertD(0x01);
 		assertDf(true);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testSdUnderflow() {
+		setupMX(0x03);
+		setD(0x05);
+		execute(0xF5);
 		assertD(0xFE);
 		assertDf(false);
 	}
 
 	@Test
-	public void testShr() {
-		loadRom("F83CF6F83DF6");
-		singleStep();
-		singleStep();
+	public void testShrDfZeroOut() {
+		setD(0x3C);
+		execute(0xF6);
 		assertD(0x1E);
 		assertDf(false);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testShrDfOneOut() {
+		setD(0x3D);
+		execute(0xF6);
 		assertD(0x1E);
 		assertDf(true);
 	}
 
 	@Test
 	public void testSm() {
-		loadRom("F805F7F801F7");
-		loadRam("03");
-		setupXToRamStart();
-		singleStep();
-		singleStep();
+		setupMX(0x03);
+		setD(0x05);
+		execute(0xF7);
 		assertD(0x02);
 		assertDf(true);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testSmUnderflow() {
+		setupMX(0x03);
+		setD(0x01);
+		execute(0xF7);
 		assertD(0xFE);
 		assertDf(false);
 	}
 
 	@Test
 	public void testLdi() {
-		loadRom("F8A500");
-		runUntilIdle();
+		execute(0xF8, 0xA5);
 		assertD(0xA5);
 	}
 
 	@Test
-	public void testOriAniXri() {
-		loadRom("F80FF955F80FFA55F80FFB55");
-		singleStep();
-		singleStep();
+	public void testOri() {
+		setD(0x55);
+		execute(0xF9, 0x0F);
 		assertD(0x5F);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testAni() {
+		setD(0x55);
+		execute(0xFA, 0x0F);
 		assertD(0x05);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testXri() {
+		setD(0x55);
+		execute(0xFB, 0x0F);
 		assertD(0x5A);
 	}
 
 	@Test
 	public void testAdi() {
-		loadRom("F802FC03F8FEFC03");
-		singleStep();
-		singleStep();
+		setD(0x02);
+		execute(0xFC, 0x03);
 		assertD(0x05);
 		assertDf(false);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testAdiOverflow() {
+		setD(0xFE);
+		execute(0xFC, 0x03);
 		assertD(0x01);
 		assertDf(true);
 	}
 
 	@Test
 	public void testSdi() {
-		loadRom("F802FD03F805FD03");
-		singleStep();
-		singleStep();
+		setD(0x02);
+		execute(0xFD, 0x03);
 		assertD(0x01);
 		assertDf(true);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testSdiUnderflow() {
+		setD(0x05);
+		execute(0xFD, 0x03);
 		assertD(0xFE);
 		assertDf(false);
 	}
 
 	@Test
-	public void testShl() {
-		loadRom("F83CFEF8BCFE");
-		singleStep();
-		singleStep();
+	public void testShlDfZeroOut() {
+		setD(0x3C);
+		execute(0xFE);
 		assertD(0x78);
 		assertDf(false);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testShlDfOneOut() {
+		setD(0xBC);
+		execute(0xFE);
 		assertD(0x78);
 		assertDf(true);
 	}
 
 	@Test
 	public void testSmi() {
-		loadRom("F805FF03F801FF03");
-		singleStep();
-		singleStep();
+		setD(0x05);
+		execute(0xFF, 0x03);
 		assertD(0x02);
 		assertDf(true);
-		singleStep();
-		singleStep();
+	}
+
+	@Test
+	public void testSmiUnderflow() {
+		setD(0x01);
+		execute(0xFF, 0x03);
 		assertD(0xFE);
 		assertDf(false);
 	}
