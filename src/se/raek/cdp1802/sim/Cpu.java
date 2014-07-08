@@ -173,9 +173,11 @@ public final class Cpu {
 		switch (n) {
 		case 0x2: // LDXA
 			s.d = m.read(s.r[s.x]++);
+			s.r[s.x] &= 0xFFFF;
 			break;
 		case 0x3: // STXD
 			m.write(s.r[s.x]--, s.d);
+			s.r[s.x] &= 0xFFFF;
 			break;
 		case 0x4: // ADC
 		{
@@ -219,6 +221,7 @@ public final class Cpu {
 		{
 			int carry = s.df ? 1 : 0;
 			int sum = m.read(s.r[s.p]++) + s.d + carry;
+			s.r[s.p] &= 0xFFFF;
 			s.d = sum & 0xFF;
 			s.df = sum > 0xFF;
 			break;
@@ -227,6 +230,7 @@ public final class Cpu {
 		{
 			int borrow = s.df ? 0 : 1;
 			int diff = m.read(s.r[s.p]++) - s.d - borrow;
+			s.r[s.p] &= 0xFFFF;
 			s.d = diff & 0xFF;
 			s.df = diff >= 0x00;
 			break;
@@ -244,6 +248,7 @@ public final class Cpu {
 		{
 			int borrow = s.df ? 0 : 1;
 			int diff = s.d - m.read(s.r[s.p]++) - borrow;
+			s.r[s.p] &= 0xFFFF;
 			s.d = diff & 0xFF;
 			s.df = diff >= 0x00;
 			break;
@@ -320,6 +325,7 @@ public final class Cpu {
 		case 0xC: // ADI
 		{
 			int sum = m.read(s.r[s.p]++) + s.d;
+			s.r[s.p] &= 0xFFFF;
 			s.d = sum & 0xFF;
 			s.df = sum > 0xFF;
 			break;
@@ -327,6 +333,7 @@ public final class Cpu {
 		case 0xD: // SDI
 		{
 			int diff = m.read(s.r[s.p]++) - s.d;
+			s.r[s.p] &= 0xFFFF;
 			s.d = diff & 0xFF;
 			s.df = diff >= 0x00;
 			break;
@@ -338,6 +345,7 @@ public final class Cpu {
 		case 0xF: // SMI
 		{
 			int diff = s.d - m.read(s.r[s.p]++);
+			s.r[s.p] &= 0xFFFF;
 			s.d = diff & 0xFF;
 			s.df = diff >= 0x00;
 			break;
