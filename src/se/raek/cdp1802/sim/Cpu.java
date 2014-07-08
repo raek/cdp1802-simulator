@@ -201,6 +201,14 @@ public final class Cpu {
 			s.df = (oldD & 0x01) != 0x00;
 			break;
 		}
+		case 0x7: // SMB
+		{
+			int borrow = s.df ? 0 : 1;
+			int diff = s.d - m.read(s.r[s.x]) - borrow;
+			s.d = diff & 0xFF;
+			s.df = diff >= 0x00;
+			break;
+		}
 		case 0xA: // REQ
 			s.q = false;
 			break;
@@ -230,6 +238,14 @@ public final class Cpu {
 			s.d = (oldD << 1) | (oldDf ? 0x01 : 0x00);
 			s.d &= 0xFF;
 			s.df = (oldD & 0x80) != 0x00;
+			break;
+		}
+		case 0xF: // SMBI
+		{
+			int borrow = s.df ? 0 : 1;
+			int diff = s.d - m.read(s.r[s.p]++) - borrow;
+			s.d = diff & 0xFF;
+			s.df = diff >= 0x00;
 			break;
 		}
 		default:
