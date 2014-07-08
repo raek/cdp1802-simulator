@@ -177,6 +177,14 @@ public final class Cpu {
 		case 0x3: // STXD
 			m.write(s.r[s.x]--, s.d);
 			break;
+		case 0x4: // ADC
+		{
+			int carry = s.df ? 1 : 0;
+			int sum = m.read(s.r[s.x]) + s.d + carry;
+			s.d = sum & 0xFF;
+			s.df = sum > 0xFF;
+			break;
+		}
 		case 0x6: // SHRC
 		{
 			int oldD = s.d;
@@ -191,6 +199,14 @@ public final class Cpu {
 		case 0xB: // SEQ
 			s.q = true;
 			break;
+		case 0xC: // ADCI
+		{
+			int carry = s.df ? 1 : 0;
+			int sum = m.read(s.r[s.p]++) + s.d + carry;
+			s.d = sum & 0xFF;
+			s.df = sum > 0xFF;
+			break;
+		}
 		case 0xE: // SHLC
 		{
 			int oldD = s.d;

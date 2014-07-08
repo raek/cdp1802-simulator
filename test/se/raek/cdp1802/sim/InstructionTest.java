@@ -68,6 +68,46 @@ public class InstructionTest extends TestBase {
 	}
 
 	@Test
+	public void testAdcDfZeroIn() {
+		setupMX(0x03);
+		setD(0x02);
+		setDf(false);
+		execute(0x74);
+		assertD(0x05);
+		assertDf(false);
+	}
+
+	@Test
+	public void testAdcDfZeroInOverflow() {
+		setupMX(0x03);
+		setD(0xFE);
+		setDf(false);
+		execute(0x74);
+		assertD(0x01);
+		assertDf(true);
+	}
+
+	@Test
+	public void testAdcDfOneIn() {
+		setupMX(0x03);
+		setD(0x02);
+		setDf(true);
+		execute(0x74);
+		assertD(0x06);
+		assertDf(false);
+	}
+
+	@Test
+	public void testAdcDfOneInOverflow() {
+		setupMX(0x03);
+		setD(0xFE);
+		setDf(true);
+		execute(0x74);
+		assertD(0x02);
+		assertDf(true);
+	}
+
+	@Test
 	public void testShrcDfZeroInZeroOut() {
 		setD(0x3C);
 		setDf(false);
@@ -114,6 +154,42 @@ public class InstructionTest extends TestBase {
 	public void testSeq() {
 		execute(0x7B);
 		assertQ(true);
+	}
+
+	@Test
+	public void testAdciDfZeroIn() {
+		setD(0x02);
+		setDf(false);
+		execute(0x7C, 0x03);
+		assertD(0x05);
+		assertDf(false);
+	}
+
+	@Test
+	public void testAdciDfZeroInOverflow() {
+		setD(0xFE);
+		setDf(false);
+		execute(0x7C, 0x03);
+		assertD(0x01);
+		assertDf(true);
+	}
+
+	@Test
+	public void testAdciDfOneIn() {
+		setD(0x02);
+		setDf(true);
+		execute(0x7C, 0x03);
+		assertD(0x06);
+		assertDf(false);
+	}
+
+	@Test
+	public void testAdciDfOneInOverflow() {
+		setD(0xFE);
+		setDf(true);
+		execute(0x7C, 0x03);
+		assertD(0x02);
+		assertDf(true);
 	}
 
 	@Test
