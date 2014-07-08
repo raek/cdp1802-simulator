@@ -108,6 +108,46 @@ public class InstructionTest extends TestBase {
 	}
 
 	@Test
+	public void testSdbDfOneIn() {
+		setupMX(0x03);
+		setD(0x02);
+		setDf(true);
+		execute(0x75);
+		assertD(0x01);
+		assertDf(true);
+	}
+
+	@Test
+	public void testSdbDfOneInUnderflow() {
+		setupMX(0x03);
+		setD(0x05);
+		setDf(true);
+		execute(0x75);
+		assertD(0xFE);
+		assertDf(false);
+	}
+
+	@Test
+	public void testSdbDfZeroIn() {
+		setupMX(0x03);
+		setD(0x02);
+		setDf(false);
+		execute(0x75);
+		assertD(0x00);
+		assertDf(true);
+	}
+
+	@Test
+	public void testSdbDfZeroInUnderflow() {
+		setupMX(0x03);
+		setD(0x05);
+		setDf(false);
+		execute(0x75);
+		assertD(0xFD);
+		assertDf(false);
+	}
+
+	@Test
 	public void testShrcDfZeroInZeroOut() {
 		setD(0x3C);
 		setDf(false);
@@ -190,6 +230,42 @@ public class InstructionTest extends TestBase {
 		execute(0x7C, 0x03);
 		assertD(0x02);
 		assertDf(true);
+	}
+
+	@Test
+	public void testSdbiDfOneIn() {
+		setD(0x02);
+		setDf(true);
+		execute(0x7D, 0x03);
+		assertD(0x01);
+		assertDf(true);
+	}
+
+	@Test
+	public void testSdbiDfOneInUnderflow() {
+		setD(0x05);
+		setDf(true);
+		execute(0x7D, 0x03);
+		assertD(0xFE);
+		assertDf(false);
+	}
+
+	@Test
+	public void testSdbiDfZeroIn() {
+		setD(0x02);
+		setDf(false);
+		execute(0x7D, 0x03);
+		assertD(0x00);
+		assertDf(true);
+	}
+
+	@Test
+	public void testSdbiDfZeroInUnderflow() {
+		setD(0x05);
+		setDf(false);
+		execute(0x7D, 0x03);
+		assertD(0xFD);
+		assertDf(false);
 	}
 
 	@Test

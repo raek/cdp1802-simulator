@@ -185,6 +185,14 @@ public final class Cpu {
 			s.df = sum > 0xFF;
 			break;
 		}
+		case 0x5: // SDB
+		{
+			int borrow = s.df ? 0 : 1;
+			int diff = m.read(s.r[s.x]) - s.d - borrow;
+			s.d = diff & 0xFF;
+			s.df = diff >= 0x00;
+			break;
+		}
 		case 0x6: // SHRC
 		{
 			int oldD = s.d;
@@ -205,6 +213,14 @@ public final class Cpu {
 			int sum = m.read(s.r[s.p]++) + s.d + carry;
 			s.d = sum & 0xFF;
 			s.df = sum > 0xFF;
+			break;
+		}
+		case 0xD: // SDBI
+		{
+			int borrow = s.df ? 0 : 1;
+			int diff = m.read(s.r[s.p]++) - s.d - borrow;
+			s.d = diff & 0xFF;
+			s.df = diff >= 0x00;
 			break;
 		}
 		case 0xE: // SHLC
