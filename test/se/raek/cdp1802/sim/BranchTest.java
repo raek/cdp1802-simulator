@@ -123,4 +123,89 @@ public class BranchTest extends TestBase {
 		executeAt(0x01FF, 0x39, 0x80);
 		assertRP(0x0201);
 	}
+
+	@Test
+	public void testBzPassPageStart() {
+		setD(0x00);
+		executeAt(0x0100, 0x32, 0x80);
+		assertRP(0x0180);
+	}
+
+	@Test
+	public void testBzFailPageStart() {
+		setD(0x01);
+		executeAt(0x0100, 0x32, 0x80);
+		assertRP(0x0102);
+	}
+
+	@Test
+	public void testBzPassPageEnd() {
+		setD(0x00);
+		executeAt(0x01FE, 0x32, 0x80);
+		assertRP(0x0180);
+	}
+
+	@Test
+	public void testBzFailPageEnd() {
+		setD(0x01);
+		executeAt(0x01FE, 0x32, 0x80);
+		assertRP(0x0200);
+	}
+
+	@Test
+	public void testBzPassPageBoundary() {
+		setD(0x00);
+		executeAt(0x01FF, 0x32, 0x80);
+		assertRP(0x0280);
+	}
+
+	@Test
+	public void testBzFailPageBoundary() {
+		setD(0x01);
+		executeAt(0x01FF, 0x32, 0x80);
+		assertRP(0x0201);
+	}
+
+	@Test
+	public void testBnzPassPageStart() {
+		setD(0x01);
+		executeAt(0x0100, 0x3A, 0x80);
+		assertRP(0x0180);
+	}
+
+	@Test
+	public void testBnzFailPageStart() {
+		setD(0x00);
+		executeAt(0x0100, 0x3A, 0x80);
+		assertRP(0x0102);
+	}
+
+	@Test
+	public void testBnzPassPageEnd() {
+		setD(0x01);
+		executeAt(0x01FE, 0x3A, 0x80);
+		assertRP(0x0180);
+	}
+
+	@Test
+	public void testBnzFailPageEnd() {
+		setD(0x00);
+		executeAt(0x01FE, 0x3A, 0x80);
+		assertRP(0x0200);
+	}
+
+	@Test
+	public void testBnzPassPageBoundary() {
+		setD(0x01);
+		executeAt(0x01FF, 0x3A, 0x80);
+		assertRP(0x0280);
+	}
+
+	@Test
+	public void testBnzFailPageBoundary() {
+		setD(0x00);
+		executeAt(0x01FF, 0x3A, 0x80);
+		assertRP(0x0201);
+	}
+
 }
