@@ -21,4 +21,22 @@ public class BranchTest extends TestBase {
 		executeOnFollowingPageBoundary(0x01, 0x30, 0x80);
 		assertRP(0x0280);
 	}
+
+	@Test
+	public void testNbrPageStart() {
+		executeAtPageStart(0x01, 0x38, 0x80);
+		assertRP(0x0102);
+	}
+
+	@Test
+	public void testNbrPageEnd() {
+		executeBeforePageEnd(0x01, 0x38, 0x80);
+		assertRP(0x0200);
+	}
+
+	@Test
+	public void testNbrPageBoundary() {
+		executeOnFollowingPageBoundary(0x01, 0x38, 0x80);
+		assertRP(0x0201);
+	}
 }

@@ -148,6 +148,10 @@ public final class Cpu {
 		case 0x0: // BR
 			s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
 			break;
+		case 0x8: // NBR
+			s.r[s.p]++;
+			s.r[s.p] &= 0xFFFF;
+			break;
 		default:
 			throw new InstructionNotImplementedException(0x3, n);
 		}
