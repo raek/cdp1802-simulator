@@ -144,64 +144,40 @@ public final class Cpu {
 	}
 
 	private void executeShortBranch(int n) {
+		boolean satisfied;
 		switch (n) {
 		case 0x0: // BR
-			s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
+			satisfied = true;
 			break;
 		case 0x1: // BQ
-			if (s.q) {
-				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
-			} else {
-				s.r[s.p]++;
-				s.r[s.p] &= 0xFFFF;
-			}
+			satisfied = s.q;
 			break;
 		case 0x2: // BZ
-			if (s.d == 0x00) {
-				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
-			} else {
-				s.r[s.p]++;
-				s.r[s.p] &= 0xFFFF;
-			}
+			satisfied = (s.d == 0);
 			break;
 		case 0x3: // BDF
-			if (s.df) {
-				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
-			} else {
-				s.r[s.p]++;
-				s.r[s.p] &= 0xFFFF;
-			}
+			satisfied = s.df;
 			break;
 		case 0x8: // NBR
-			s.r[s.p]++;
-			s.r[s.p] &= 0xFFFF;
+			satisfied = false;
 			break;
 		case 0x9: // BNQ
-			if (!s.q) {
-				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
-			} else {
-				s.r[s.p]++;
-				s.r[s.p] &= 0xFFFF;
-			}
+			satisfied = !s.q;
 			break;
 		case 0xA: // BNZ
-			if (s.d != 0x00) {
-				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
-			} else {
-				s.r[s.p]++;
-				s.r[s.p] &= 0xFFFF;
-			}
+			satisfied = (s.d != 0);
 			break;
 		case 0xB: // BNF
-			if (!s.df) {
-				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
-			} else {
-				s.r[s.p]++;
-				s.r[s.p] &= 0xFFFF;
-			}
+			satisfied = !s.df;
 			break;
 		default:
 			throw new InstructionNotImplementedException(0x3, n);
+		}
+		if (satisfied) {
+			s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
+		} else {
+			s.r[s.p]++;
+			s.r[s.p] &= 0xFFFF;
 		}
 	}
 
