@@ -146,7 +146,7 @@ public final class Cpu {
 	private void executeShortBranch(int n) {
 		switch (n) {
 		case 0x0: // BR
-			s.r[s.p] = m.read(s.r[s.p]);
+			s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
 			break;
 		default:
 			throw new InstructionNotImplementedException(0x3, n);

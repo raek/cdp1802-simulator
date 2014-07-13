@@ -20,16 +20,16 @@ public class TestBase {
 	private Cpu cpu;
 
 	private static final int romStart = 0x0000;
-	private static final int romLength = 0x100;
-	private static final int ramStart = 0x0100;
-	private static final int ramLength = 0x100;
+	private static final int romLength = 0x400;
+	private static final int ramStart = 0x0400;
+	private static final int ramLength = 0x400;
 	private static final int defaultX = 0xF;
 
 	@Before
 	public void setUp() {
 		s = new Cpu.State();
-		rom = new ArrayMemory(0x100);
-		ram = new ArrayMemory(0x100);
+		rom = new ArrayMemory(romLength);
+		ram = new ArrayMemory(ramLength);
 		MemoryMapper mm = new MemoryMapper();
 		mm.map(romStart, romLength, new MemoryWriteProtector(rom));
 		mm.map(ramStart, ramLength, ram);
@@ -88,6 +88,36 @@ public class TestBase {
 		cpu.tick();
 	}
 
+	protected void executeAtPageStart(int page, int instruction, int immediateData) {
+		int pageStart = page << 8;
+		rom.write(pageStart, instruction);
+		rom.write(pageStart + 1, immediateData);
+		s.p = 0x0;
+		s.r[s.p] = pageStart;
+		s.idle = false;
+		cpu.tick();
+	}
+
+	protected void executeBeforePageEnd(int page, int instruction, int immediateData) {
+		int nextPageStart = (page + 1) << 8;
+		rom.write(nextPageStart - 2, instruction);
+		rom.write(nextPageStart - 1, immediateData);
+		s.p = 0x0;
+		s.r[s.p] = nextPageStart - 2;
+		s.idle = false;
+		cpu.tick();
+	}
+
+	protected void executeOnFollowingPageBoundary(int page, int instruction, int immediateData) {
+		int nextPageStart = (page + 1) << 8;
+		rom.write(nextPageStart - 1, instruction);
+		rom.write(nextPageStart, immediateData);
+		s.p = 0x0;
+		s.r[s.p] = nextPageStart - 1;
+		s.idle = false;
+		cpu.tick();
+	}
+
 	protected void setD(int d) {
 		s.d = d;
 	}
@@ -102,6 +132,10 @@ public class TestBase {
 
 	protected void assertR(int r, int expected) {
 		assertEquals(expected, s.r[r]);
+	}
+
+	protected void assertRP(int expected) {
+		assertEquals(expected, s.r[s.p]);
 	}
 
 	protected void assertMX(int expected) {
