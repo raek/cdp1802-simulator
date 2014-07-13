@@ -126,6 +126,10 @@ public class TestBase {
 		s.df = df;
 	}
 
+	protected void setQ(boolean q) {
+		s.q = q;
+	}
+
 	protected void assertD(int expected) {
 		assertEquals(expected, s.d);
 	}
