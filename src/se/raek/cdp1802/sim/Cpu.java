@@ -164,6 +164,14 @@ public final class Cpu {
 				s.r[s.p] &= 0xFFFF;
 			}
 			break;
+		case 0x3: // BDF
+			if (s.df) {
+				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
+			} else {
+				s.r[s.p]++;
+				s.r[s.p] &= 0xFFFF;
+			}
+			break;
 		case 0x8: // NBR
 			s.r[s.p]++;
 			s.r[s.p] &= 0xFFFF;
@@ -178,6 +186,14 @@ public final class Cpu {
 			break;
 		case 0xA: // BNZ
 			if (s.d != 0x00) {
+				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
+			} else {
+				s.r[s.p]++;
+				s.r[s.p] &= 0xFFFF;
+			}
+			break;
+		case 0xB: // BNF
+			if (!s.df) {
 				s.r[s.p] = withLowByte(s.r[s.p], m.read(s.r[s.p]));
 			} else {
 				s.r[s.p]++;

@@ -208,4 +208,88 @@ public class BranchTest extends TestBase {
 		assertRP(0x0201);
 	}
 
+	@Test
+	public void testBdfPassPageStart() {
+		setDf(true);
+		executeAt(0x0100, 0x33, 0x80);
+		assertRP(0x0180);
+	}
+
+	@Test
+	public void testBdfFailPageStart() {
+		setDf(false);
+		executeAt(0x0100, 0x33, 0x80);
+		assertRP(0x0102);
+	}
+
+	@Test
+	public void testBdfPassPageEnd() {
+		setDf(true);
+		executeAt(0x01FE, 0x33, 0x80);
+		assertRP(0x0180);
+	}
+
+	@Test
+	public void testBdfFailPageEnd() {
+		setDf(false);
+		executeAt(0x01FE, 0x33, 0x80);
+		assertRP(0x0200);
+	}
+
+	@Test
+	public void testBdfPassPageBoundary() {
+		setDf(true);
+		executeAt(0x01FF, 0x33, 0x80);
+		assertRP(0x0280);
+	}
+
+	@Test
+	public void testBdfFailPageBoundary() {
+		setDf(false);
+		executeAt(0x01FF, 0x33, 0x80);
+		assertRP(0x0201);
+	}
+
+	@Test
+	public void testBnfPassPageStart() {
+		setDf(false);
+		executeAt(0x0100, 0x3B, 0x80);
+		assertRP(0x0180);
+	}
+
+	@Test
+	public void testBnfFailPageStart() {
+		setDf(true);
+		executeAt(0x0100, 0x3B, 0x80);
+		assertRP(0x0102);
+	}
+
+	@Test
+	public void testBnfPassPageEnd() {
+		setDf(false);
+		executeAt(0x01FE, 0x3B, 0x80);
+		assertRP(0x0180);
+	}
+
+	@Test
+	public void testBnfFailPageEnd() {
+		setDf(true);
+		executeAt(0x01FE, 0x3B, 0x80);
+		assertRP(0x0200);
+	}
+
+	@Test
+	public void testBnfPassPageBoundary() {
+		setDf(false);
+		executeAt(0x01FF, 0x3B, 0x80);
+		assertRP(0x0280);
+	}
+
+	@Test
+	public void testBnfFailPageBoundary() {
+		setDf(true);
+		executeAt(0x01FF, 0x3B, 0x80);
+		assertRP(0x0201);
+	}
+
 }
