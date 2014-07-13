@@ -88,32 +88,11 @@ public class TestBase {
 		cpu.tick();
 	}
 
-	protected void executeAtPageStart(int page, int instruction, int immediateData) {
-		int pageStart = page << 8;
-		rom.write(pageStart, instruction);
-		rom.write(pageStart + 1, immediateData);
+	protected void executeAt(int addr, int instruction, int immediateData) {
+		rom.write(addr, instruction);
+		rom.write(addr + 1, immediateData);
 		s.p = 0x0;
-		s.r[s.p] = pageStart;
-		s.idle = false;
-		cpu.tick();
-	}
-
-	protected void executeBeforePageEnd(int page, int instruction, int immediateData) {
-		int nextPageStart = (page + 1) << 8;
-		rom.write(nextPageStart - 2, instruction);
-		rom.write(nextPageStart - 1, immediateData);
-		s.p = 0x0;
-		s.r[s.p] = nextPageStart - 2;
-		s.idle = false;
-		cpu.tick();
-	}
-
-	protected void executeOnFollowingPageBoundary(int page, int instruction, int immediateData) {
-		int nextPageStart = (page + 1) << 8;
-		rom.write(nextPageStart - 1, instruction);
-		rom.write(nextPageStart, immediateData);
-		s.p = 0x0;
-		s.r[s.p] = nextPageStart - 1;
+		s.r[s.p] = addr;
 		s.idle = false;
 		cpu.tick();
 	}
